@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename = 'style.css') }}"
+    />
+  </head>
+
+  <body>
+    <nav>
+      <ul>
+        {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('tasks') }}">ToDo管理</a></li>
+        <li>
+          <form action="{{ url_for('logout')}}" method="POST">
+            <button type="submit">ログアウト</button>
+          </form>
+        </li>
+        {% else %}
+        <li><p>ToDo管理</p></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% block content %}{% endblock %}
+  </body>
+</html>
