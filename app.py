@@ -27,7 +27,7 @@ login_manager.login_message = "ログインが必要です"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 @app.route("/")
 def index():
@@ -42,28 +42,27 @@ def register():
 
         if not email or not password1 or not password2:
             error = "すべての項目を入力してください"
-            return render_template("register.html", error = error)
+            return render_template("register.html", error=error)
 
-        elif User.query.filter_by(email = email).first():
+        if db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none():
             error = "このメールアドレスは既に使用されています"
-            return render_template("register.html", error = error)
+            return render_template("register.html", error=error)
         
-        elif password1 != password2:
+        if password1 != password2:
             error = "パスワードが一致していません"
-            return render_template("register.html", error = error)
+            return render_template("register.html", error=error)
 
-        else:
-            password_hash = generate_password_hash(password1)
+        password_hash = generate_password_hash(password1)
             
-            user = User(email = email,
-                        password_hash = password_hash)
+        user = User(email=email,
+                        password_hash=password_hash)
             
-            db.session.add(user)
-            db.session.commit()
+        db.session.add(user)
+        db.session.commit()
 
-            login_user(user)
+        login_user(user)
 
-            return redirect(url_for("tasks"))
+        return redirect(url_for("tasks"))
 
     return render_template("register.html")
 
@@ -75,13 +74,13 @@ def login():
 
         if not email or not password:
             error = "すべての項目を入力してください"
-            return render_template("login.html", error = error)
+            return render_template("login.html", error=error)
         
-        user = User.query.filter_by(email = email).first()
+        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
 
         if not user or not check_password_hash(user.password_hash, password):
             error = "メールアドレスまたはパスワードが正しくありません"
-            return render_template("login.html", error = error)
+            return render_template("login.html", error=error)
         
         login_user(user)
 
@@ -95,7 +94,7 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-@app.route("/tasks")
+@app.route("/tasks", methods=["GET"])
 @login_required
 def tasks():
     return render_template("tasks.html")

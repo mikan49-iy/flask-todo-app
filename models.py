@@ -24,3 +24,4 @@ class Task(db.Model):
     is_done = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    completed_at = db.Column(db.DateTime, nullable=True)
