@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}タスク作成{% endblock %}
+
+{% block content %}
+
+  <h2>タスク作成</h2>
+
+  {% if error %}
+    <p>{{ error }}</p>
+  {% endif %}
+  <form action="{{ url_for('task_create') }}" method="POST">
+    <label for="title">タイトル</label>
+    <input type="text" name="title" id="title" required />
+    
+    <label for="description">メモ（任意）</label>
+    <textarea name="description" id="description" rows="5" cols="20"></textarea>
+    
+    <label for="due_date">期限（任意）</label>
+    <input type="date" name="due_date" id="due_date" />
+
+    <label for="priority">優先度</label>
+    <select name="priority">
+      <option value="high">高</option>
+      <option value="medium" selected>中</option>
+      <option value="low">低</option>
+    </select>
+
+    <input type="submit" value="登録する" />
+  </form>
+  <a href="{{ url_for('tasks') }}">一覧へ戻る</a>
+{% endblock %}

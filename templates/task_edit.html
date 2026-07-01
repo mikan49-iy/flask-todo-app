@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}タスク編集{% endblock %}
+
+{% block content %}
+
+  <h2>タスク編集</h2>
+
+  {% if error %}
+    <p>{{ error }}</p>
+  {% endif %}
+
+  <form action="{{ url_for('task_edit', id=task.id) }}" method="POST">
+    <label for="title">タイトル</label>
+    <input
+      type="text"
+      name="title"
+      id="title"
+      value="{{ task.title }}"
+      required
+    />
+    <label for="description">メモ（任意）</label>
+    <textarea name="description" id="description" rows="5" cols="20">{{ task.description or "" }}</textarea>
+    <label for="due_date">期限（任意）</label>
+    <input
+      type="date"
+      name="due_date"
+      id="due_date"
+      value="{{ task.due_date }}"
+    />
+
+    <label for="priority">優先度</label>
+    <select name="priority">
+      <option value="high" {% if task.priority == "high" %}selected{% endif %}>高</option>
+      <option value="medium" {% if task.priority == "medium" %}selected{% endif %}>中</option>
+      <option value="low" {% if task.priority == "low" %}selected{% endif %}>低</option>
+    </select>
+
+    <input type="submit" value="更新する" />
+  </form>
+
+  <a href="{{ url_for('tasks') }}">一覧へ戻る</a>
+  {% endblock %}
