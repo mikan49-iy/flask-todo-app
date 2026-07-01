@@ -13,14 +13,14 @@
     <nav>
       <ul>
         {% if current_user.is_authenticated %}
-        <li><a href="{{ url_for('tasks') }}">ToDo管理</a></li>
-        <li>
-          <form action="{{ url_for('logout')}}" method="POST">
-            <button type="submit">ログアウト</button>
-          </form>
-        </li>
+          <li><a href="{{ url_for('tasks') }}">ToDo管理</a></li>
+          <li>
+            <form action="{{ url_for('logout') }}" method="POST">
+              <button type="submit">ログアウト</button>
+            </form>
+          </li>
         {% else %}
-        <li><p>ToDo管理</p></li>
+          <li><p>ToDo管理</p></li>
         {% endif %}
       </ul>
     </nav>
