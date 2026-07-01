@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
 
     tasks = db.relationship("Task", backref="user", lazy=True)
 
+
 class Task(db.Model):
     __tablename__ = "tasks"
 

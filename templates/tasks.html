@@ -1,4 +1,95 @@
-{% extends "base.html" %} {% block title %}タスク一覧{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+
+{% block title %}タスク一覧{% endblock %}
+
+{% block content %}
 <h2>タスク一覧</h2>
+
+<a href="{{ url_for('task_create') }}">新規作成</a>
+
+<div>
+  <h3>未完了タスク</h3>
+  {% if incomplete_tasks %}
+    {% for task in incomplete_tasks %}
+      <div>
+        <div>
+          <h4>{{ task.title }}</h4>
+
+          {% if task.description %}
+            <p>{{ task.description }}</p>
+          {% endif %}
+          
+          {% if task.due_date %}
+            <p>期限：{{ task.due_date }}</p>
+            {% if task.due_date < today %}
+              <button type="button">期限切れです</button>
+            {% endif %}
+          {% endif %}
+          
+          {% if task.priority == "high" %}
+            <p>優先度：高</p>
+          {% elif task.priority == "medium" %}
+            <p>優先度：中</p>
+          {% elif task.priority == "low" %}
+            <p>優先度：低</p>
+          {% endif %}
+        </div>
+        <div>
+          <a href="{{ url_for('task_edit', id=task.id) }}">編集</a>
+          <form action="{{ url_for('task_complete', id=task.id) }}" method="POST">
+            <button type="submit">完了</button>
+          </form>
+          <form action="{{ url_for('task_delete', id=task.id) }}" method="POST">
+            <button type="submit">削除</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+
+  {% else %}
+    <p>未完了のタスクはありません</p>
+  {% endif %}
+</div>
+
+<div>
+  <h3>完了タスク</h3>
+  {% if completed_tasks %}
+    {% for task in completed_tasks %}
+      <div>
+        <div>
+          <h4>{{ task.title }}</h4>
+
+            {% if task.description %}
+              <p>{{ task.description }}</p>
+            {% endif %}
+            
+            {% if task.due_date %}
+              <p>期限：{{ task.due_date }}</p>
+            {% endif %}
+            
+            {% if task.priority == "high" %}
+              <p>優先度：高</p>
+            {% elif task.priority == "medium" %}
+              <p>優先度：中</p>
+            {% elif task.priority == "low" %}
+              <p>優先度：低</p>
+            {% endif %}
+        </div>
+
+        <div>
+          <form action="{{ url_for('task_incomplete', id=task.id) }}" method="POST">
+            <button type="submit">未完了に戻す</button>
+          </form>
+          <form action="{{ url_for('task_delete', id=task.id) }}" method="POST">
+            <button type="submit">削除</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+
+  {% else %}
+    <p>完了したタスクはありません</p>
+  {% endif %}
+</div>
+
 {% endblock %}
