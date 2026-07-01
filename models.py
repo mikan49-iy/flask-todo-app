@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
 
     tasks = db.relationship("Task", backref="user", lazy=True)
 
+
 class Task(db.Model):
     __tablename__ = "tasks"
 
@@ -24,3 +25,4 @@ class Task(db.Model):
     is_done = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    completed_at = db.Column(db.DateTime, nullable=True)
