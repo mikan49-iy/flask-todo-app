@@ -3,41 +3,56 @@
 {% block title %}タスク編集{% endblock %}
 
 {% block content %}
+  <div class="container mt-5">
+    <div class="mx-auto" style="max-width: 500px;">
+      <h2>タスク編集</h2>
 
-  <h2>タスク編集</h2>
+      {% if error %}
+        <div class="alert alert-danger">
+          {{ error }}
+        </div>
+      {% endif %}
 
-  {% if error %}
-    <p>{{ error }}</p>
-  {% endif %}
+      <form action="{{ url_for('task_edit', id=task.id) }}" method="POST">
+        <div class="mb-3">
+          <label for="title" class="form-label">タイトル</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            value="{{ task.title }}"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">メモ（任意）</label>
+          <textarea name="description" id="description" rows="5" cols="20" class="form-control">{{ task.description or "" }}</textarea>
+        </div>
+        <div class="mb-3">
+          <label for="due_date" class="form-label">期限（任意）</label>
+          <input
+            type="date"
+            name="due_date"
+            id="due_date"
+            value="{{ task.due_date }}"
+            class="form-control"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="priority" class="form-label">優先度</label>
+          <select name="priority" class="form-select">
+            <option value="high" {% if task.priority == "high" %}selected{% endif %}>高</option>
+            <option value="medium" {% if task.priority == "medium" %}selected{% endif %}>中</option>
+            <option value="low" {% if task.priority == "low" %}selected{% endif %}>低</option>
+          </select>
+        </div>
+        <div class="d-grid gap-2 mx-auto mt-4">
+          <button type="submit" class="btn btn-primary">更新する</button>
+        </div>
+      </form>
 
-  <form action="{{ url_for('task_edit', id=task.id) }}" method="POST">
-    <label for="title">タイトル</label>
-    <input
-      type="text"
-      name="title"
-      id="title"
-      value="{{ task.title }}"
-      required
-    />
-    <label for="description">メモ（任意）</label>
-    <textarea name="description" id="description" rows="5" cols="20">{{ task.description or "" }}</textarea>
-    <label for="due_date">期限（任意）</label>
-    <input
-      type="date"
-      name="due_date"
-      id="due_date"
-      value="{{ task.due_date }}"
-    />
-
-    <label for="priority">優先度</label>
-    <select name="priority">
-      <option value="high" {% if task.priority == "high" %}selected{% endif %}>高</option>
-      <option value="medium" {% if task.priority == "medium" %}selected{% endif %}>中</option>
-      <option value="low" {% if task.priority == "low" %}selected{% endif %}>低</option>
-    </select>
-
-    <input type="submit" value="更新する" />
-  </form>
-
-  <a href="{{ url_for('tasks') }}">一覧へ戻る</a>
-  {% endblock %}
+      <a class="btn btn-outline-primary mt-4" href="{{ url_for('tasks') }}">一覧へ戻る</a>
+    </div>
+  </div>
+{% endblock %}
