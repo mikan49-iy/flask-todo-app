@@ -7,16 +7,20 @@
     <div class="card p-4 shadow auth-card">
       <h2 class="text-center mb-4">ユーザー新規登録</h2>
 
-      {% if error %}
-        <div class="alert alert-danger">
-          {{ error }}
-        </div>
-      {% endif %}
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-danger">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
 
       <form action="{{ url_for('register') }}" method="POST">
         <div class="mb-3">
           <label for="email" class="form-label">メールアドレス</label>
-          <input type="email" name="email" id="email" class="form-control" required />
+          <input type="email" value="{{ form_data.email }}" maxlength="255" name="email" id="email" class="form-control" required />
         </div>
         <div class="mb-3">
           <label for="password1" class="form-label">パスワード</label>
