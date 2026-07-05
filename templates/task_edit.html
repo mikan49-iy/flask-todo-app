@@ -19,20 +19,20 @@
 
       <form action="{{ url_for('task_edit', id=task.id) }}" method="POST">
         <div class="mb-3">
-          <label for="title"  class="form-label">タイトル</label>
+          <label for="title" class="form-label">タイトル</label>
           <input
             type="text"
             maxlength="100"
             name="title"
             id="title"
-            value="{{ task.title }}"
+            value="{{ form_data.title }}"
             class="form-control"
             required
           />
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">メモ（任意）</label>
-          <textarea maxlength="1000" name="description" id="description" rows="5" cols="20" class="form-control">{{ task.description or "" }}</textarea>
+          <textarea maxlength="1000" name="description" id="description" rows="5" cols="20" class="form-control">{{ form_data.description }}</textarea>
         </div>
         <div class="mb-3">
           <label for="due_date" class="form-label">期限（任意）</label>
@@ -40,16 +40,16 @@
             type="date"
             name="due_date"
             id="due_date"
-            value="{{ task.due_date }}"
+            value="{{ form_data.due_date }}"
             class="form-control"
           />
         </div>
         <div class="mb-3">
           <label for="priority" class="form-label">優先度</label>
           <select name="priority" class="form-select">
-            <option value="high" {% if task.priority == "high" %}selected{% endif %}>高</option>
-            <option value="medium" {% if task.priority == "medium" %}selected{% endif %}>中</option>
-            <option value="low" {% if task.priority == "low" %}selected{% endif %}>低</option>
+            <option value="high" {% if form_data.priority == "high" %}selected{% endif %}>高</option>
+            <option value="medium" {% if form_data.priority == "medium" %}selected{% endif %}>中</option>
+            <option value="low" {% if form_data.priority == "low" %}selected{% endif %}>低</option>
           </select>
         </div>
         <div class="d-grid gap-2 mx-auto mt-4">
