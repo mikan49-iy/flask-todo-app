@@ -16,7 +16,7 @@
       <form action="{{ url_for('register') }}" method="POST">
         <div class="mb-3">
           <label for="email" class="form-label">メールアドレス</label>
-          <input type="email" name="email" id="email" class="form-control" required />
+          <input type="email" maxlength="255" name="email" id="email" class="form-control" required />
         </div>
         <div class="mb-3">
           <label for="password1" class="form-label">パスワード</label>

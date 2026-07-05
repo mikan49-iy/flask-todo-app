@@ -8,7 +8,6 @@ from sqlalchemy import case
 from datetime import date, datetime
 
 from extensions import db, migrate
-import models
 from models import User, Task
 
 load_dotenv()
@@ -33,7 +32,9 @@ def load_user(user_id):
 
 @app.route("/")
 def index():
-    return "Hello ToDo App"
+    if current_user.is_authenticated:
+        return redirect(url_for("tasks"))
+    return redirect(url_for("login"))
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -46,6 +47,18 @@ def register():
             error = "すべての項目を入力してください"
             return render_template("register.html", error=error)
 
+        if len(email) > 255:
+            error = "メールアドレスは255文字以下で入力してください"
+            return render_template("register.html", error=error)
+
+        if not (8 <= len(password1) <= 72):
+            error = "パスワードは8文字以上72文字以下で入力してください"
+            return render_template("register.html", error=error)
+
+        if password1 != password2:
+            error = "パスワードが一致していません"
+            return render_template("register.html", error=error)
+
         if db.session.execute(
             db.select(User).filter_by(email=email)
         ).scalar_one_or_none():
@@ -53,14 +66,12 @@ def register():
             error = "このメールアドレスは既に使用されています"
             return render_template("register.html", error=error)
         
-        if password1 != password2:
-            error = "パスワードが一致していません"
-            return render_template("register.html", error=error)
-
         password_hash = generate_password_hash(password1)
             
-        user = User(email=email,
-                        password_hash=password_hash)
+        user = User(
+            email=email,
+            password_hash=password_hash,
+        )
             
         db.session.add(user)
         db.session.commit()
@@ -157,20 +168,22 @@ def task_create():
     if request.method == "POST":
         title = request.form.get("title", "").strip()
         description = request.form.get("description", "").strip()
+        due_date = request.form.get("due_date")
+        priority = request.form.get("priority", "medium")
+
+        if not (1 <= len(title) <= 100):
+            error = "タイトルは1文字以上100文字以下で入力してください"
+            return render_template("task_create.html", error=error)
+
+        if len(description) > 1000:
+            error = "メモは1000文字以下で入力してください"
+            return render_template("task_create.html", error=error)
 
         if description == "":
-            description = None
-
-        due_date = request.form.get("due_date")
+            description = None        
 
         if due_date == "":
             due_date = None
-
-        priority = request.form.get("priority", "medium")
-    
-        if not title:
-            error = "タイトルは必須です"
-            return render_template("task_create.html", error=error)
 
         task = Task(
             user_id=current_user.id,
@@ -204,24 +217,30 @@ def task_edit(id):
 
         title = request.form.get("title", "").strip()
         description = request.form.get("description", "").strip()
-
-        if description == "":
-            description = None
-
         due_date = request.form.get("due_date")
-
-        if due_date == "":
-            due_date = None
-
         priority = request.form.get("priority", "medium")
-    
-        if not title:
-            error = "タイトルは必須です"
+
+        if not (1 <= len(title) <= 100):
+            error = "タイトルは1文字以上100文字以下で入力してください"
             return render_template(
                 "task_edit.html",
                 error=error,
                 task=task
             )
+        
+        if len(description) > 1000:
+            error = "メモは1000文字以下で入力してください"
+            return render_template(
+                "task_edit.html",
+                error=error,
+                task=task
+            )
+
+        if description == "":
+            description = None
+
+        if due_date == "":
+            due_date = None
 
         task.title = title
         task.description = description
