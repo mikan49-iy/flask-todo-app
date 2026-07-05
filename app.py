@@ -43,28 +43,47 @@ def register():
         password1 = request.form.get("password1", "")
         password2 = request.form.get("password2", "")
 
+        form_data = {
+            "email": email,
+        }
+
         if not email or not password1 or not password2:
             flash("すべての項目を入力してください")
-            return render_template("register.html")
+            return render_template(
+                "register.html",
+                form_data=form_data,
+            )
 
         if len(email) > 255:
             flash("メールアドレスは255文字以下で入力してください")
-            return render_template("register.html")
+            return render_template(
+                "register.html",
+                form_data=form_data,
+            )
 
         if not (8 <= len(password1) <= 72):
             flash("パスワードは8文字以上72文字以下で入力してください")
-            return render_template("register.html")
+            return render_template(
+                "register.html",
+                form_data=form_data,
+            )
 
         if password1 != password2:
             flash("パスワードが一致していません")
-            return render_template("register.html")
+            return render_template(
+                "register.html",
+                form_data=form_data,
+            )
 
         if db.session.execute(
             db.select(User).filter_by(email=email)
         ).scalar_one_or_none():
 
             flash("このメールアドレスは既に使用されています")
-            return render_template("register.html")
+            return render_template(
+                "register.html",
+                form_data=form_data,
+            )
         
         password_hash = generate_password_hash(password1)
             
@@ -80,7 +99,12 @@ def register():
 
         return redirect(url_for("tasks"))
 
-    return render_template("register.html")
+    return render_template(
+        "register.html",
+        form_data={
+            "email": "",
+        },
+    )
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -94,7 +118,7 @@ def login():
         
         user = db.session.execute(
             db.select(User).filter_by(email=email)
-            ).scalar_one_or_none()
+        ).scalar_one_or_none()
 
         if not user or not check_password_hash(
             user.password_hash, password):
@@ -148,7 +172,8 @@ def tasks():
             Task.user_id == current_user.id,
             Task.is_done.is_(True),
         ).order_by(
-            Task.completed_at.desc())
+            Task.completed_at.desc()
+        )
     )
     
     completed_tasks = db.session.execute(
@@ -171,13 +196,26 @@ def task_create():
         due_date = request.form.get("due_date")
         priority = request.form.get("priority", "medium")
 
+        form_data = {
+            "title": title,
+            "description": description,
+            "due_date": due_date,
+            "priority": priority,
+        }
+
         if not (1 <= len(title) <= 100):
             flash("タイトルは1文字以上100文字以下で入力してください")
-            return render_template("task_create.html")
+            return render_template(
+                "task_create.html",
+                form_data=form_data,
+            )
 
         if len(description) > 1000:
             flash("メモは1000文字以下で入力してください")
-            return render_template("task_create.html")
+            return render_template(
+                "task_create.html",
+                form_data=form_data,
+            )
 
         if description == "":
             description = None        
@@ -198,7 +236,15 @@ def task_create():
 
         return redirect(url_for("tasks"))
 
-    return render_template("task_create.html")
+    return render_template(
+        "task_create.html",
+        form_data={
+            "title": "",
+            "description": "",
+            "due_date": "",
+            "priority": "medium",
+        },   
+    )
 
 @app.route("/tasks/<int:id>/edit", methods=["GET", "POST"])
 @login_required
@@ -220,18 +266,27 @@ def task_edit(id):
         due_date = request.form.get("due_date")
         priority = request.form.get("priority", "medium")
 
+        form_data = {
+            "title": title,
+            "description": description,
+            "due_date": due_date,
+            "priority": priority,
+        }
+
         if not (1 <= len(title) <= 100):
             flash("タイトルは1文字以上100文字以下で入力してください")
             return render_template(
                 "task_edit.html",
-                task=task
+                task=task,
+                form_data=form_data,
             )
         
         if len(description) > 1000:
             flash("メモは1000文字以下で入力してください")
             return render_template(
                 "task_edit.html",
-                task=task
+                task=task,
+                form_data=form_data,
             )
 
         if description == "":
@@ -249,7 +304,18 @@ def task_edit(id):
 
         return redirect(url_for("tasks"))
 
-    return render_template("task_edit.html", task=task)
+    form_data = {
+        "title": task.title,
+        "description": task.description or "",
+        "due_date": task.due_date or "",
+        "priority": task.priority,
+    }
+
+    return render_template(
+        "task_edit.html",
+        task=task,
+        form_data=form_data,
+    )
 
 @app.route("/tasks/<int:id>/complete", methods=["POST"])
 @login_required

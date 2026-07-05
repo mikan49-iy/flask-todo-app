@@ -20,22 +20,37 @@
       <form action="{{ url_for('task_create') }}" method="POST">
         <div class="mb-3">
           <label for="title" class="form-label">タイトル</label>
-          <input type="text" maxlength="100" name="title" id="title" class="form-control" required />
+          <input type="text" value="{{ form_data.title }}" maxlength="100" name="title" id="title" class="form-control" required />
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">メモ（任意）</label>
-          <textarea name="description" maxlength="1000" id="description" rows="5" cols="20" class="form-control"></textarea>
+          <textarea name="description" maxlength="1000" id="description" rows="5" cols="20" class="form-control">{{ form_data.description }}</textarea>
         </div>
         <div class="mb-3">
           <label for="due_date" class="form-label">期限（任意）</label>
-          <input type="date" name="due_date" id="due_date" class="form-control"/>
+          <input type="date" value="{{ form_data.due_date }}" name="due_date" id="due_date" class="form-control"/>
         </div>
         <div class="mb-3">
           <label for="priority" class="form-label">優先度</label>
           <select name="priority" class="form-select">
-            <option value="high">高</option>
-            <option value="medium" selected>中</option>
-            <option value="low">低</option>
+            <option
+              value="high"
+              {% if form_data.priority == "high" %}selected{% endif %}
+            >
+              高
+            </option>
+            <option
+              value="medium"
+              {% if form_data.priority == "medium" %}selected{% endif %}
+            >
+              中
+            </option>
+            <option
+              value="low"
+              {% if form_data.priority == "low" %}selected{% endif %}
+            >
+              低
+            </option>
           </select>
         </div>
         <div class="d-grid gap-2 mx-auto mt-4">
