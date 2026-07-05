@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask, redirect, render_template, url_for, request, flash
+from flask import Flask, redirect, render_template, url_for, request, flash, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import case
@@ -257,7 +257,7 @@ def task_edit(id):
     ).scalar_one_or_none()
 
     if task is None:
-        return redirect(url_for("tasks"))
+        abort(404)
 
     if request.method == "POST":
 
@@ -328,7 +328,7 @@ def task_complete(id):
     ).scalar_one_or_none()
 
     if task is None:
-        return redirect(url_for("tasks"))
+        abort(404)
     
     task.is_done = True
     task.completed_at = datetime.now()
@@ -349,7 +349,7 @@ def task_incomplete(id):
     ).scalar_one_or_none()
 
     if task is None:
-        return redirect(url_for("tasks"))
+        abort(404)
     
     task.is_done = False
     task.completed_at = None
@@ -369,9 +369,13 @@ def task_delete(id):
     ).scalar_one_or_none()
 
     if task is None:
-        return redirect(url_for("tasks"))
+        abort(404)
     
     db.session.delete(task)
     db.session.commit()
 
     return redirect(url_for("tasks"))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
