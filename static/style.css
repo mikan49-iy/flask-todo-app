@@ -7,3 +7,7 @@ body {
 .auth-card {
     width: 24rem;
 }
+
+.task-description {
+    white-space: pre-wrap;
+}
