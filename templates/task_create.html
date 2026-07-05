@@ -16,11 +16,11 @@
       <form action="{{ url_for('task_create') }}" method="POST">
         <div class="mb-3">
           <label for="title" class="form-label">タイトル</label>
-          <input type="text" name="title" id="title" class="form-control" required />
+          <input type="text" maxlength="100" name="title" id="title" class="form-control" required />
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">メモ（任意）</label>
-          <textarea name="description" id="description" rows="5" cols="20" class="form-control"></textarea>
+          <textarea name="description" maxlength="1000" id="description" rows="5" cols="20" class="form-control"></textarea>
         </div>
         <div class="mb-3">
           <label for="due_date" class="form-label">期限（任意）</label>
