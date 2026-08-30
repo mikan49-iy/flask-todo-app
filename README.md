@@ -10,7 +10,6 @@
 - [今後の改善予定](#今後の改善予定)
 - [起動方法](#起動方法)
 - [スクリーンショット](#スクリーンショット)
-- [開発について](#開発について)
 
 ## アプリ概要
 
@@ -103,34 +102,44 @@ FlaskおよびWebアプリケーション開発の学習のアウトプットと
 git clone https://github.com/mikan49-iy/flask-todo-app.git
 ```
 
-2. 仮想環境を作成します。
+2. プロジェクトディレクトリへ移動します。
+```bash
+cd flask-todo-app
+```
+
+3. 仮想環境を作成します。
 ```bash
 python -m venv .venv
 ```
 
-3. 仮想環境を有効化します。
+4. 仮想環境を有効化します。
 ```bash
 source .venv/bin/activate
 ```
 
-4. 必要なライブラリをインストールします。
+5. 必要なライブラリをインストールします。
 ```bash
 pip install -r requirements.txt
 ```
 ※ Python 3.11 を想定しています。
 
-5. `.env.example` を参考に `.env` を作成します。
+6. `.env.example` を参考に `.env` を作成します。
 
     **※ 本アプリでは、データベースはDocker上のMySQLを利用しています。**
 
-6. MySQLを起動し、todo_app データベースを作成します。
+7. MySQLコンテナを起動します。
+```bash
+docker compose up -d
+```
 
-7. マイグレーションを実行します。
+`.env` の `MYSQL_DATABASE` に指定したデータベースは、MySQLコンテナの初回起動時に作成されます。
+
+8. マイグレーションを実行します。
 ```bash
 flask db upgrade
 ```
 
-8. アプリケーションを起動します。
+9. アプリケーションを起動します。
 ```bash
 flask --app app run
 ```
@@ -157,7 +166,3 @@ Bootstrapを使用し、シンプルで見やすいレイアウトを意識し�
 Bootstrapのフォームコンポーネントを使用し、入力しやすい画面を目指しました。
 
 <img src="images/task_create.png" width="700">
-
-## 開発について
-
-実装中は公式ドキュメントを参照しながら仕様を確認し、不明点についてはChatGPTも活用して理解を深めながら開発を進めました。
